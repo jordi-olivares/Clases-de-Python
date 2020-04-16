@@ -1,24 +1,18 @@
-clientes='david,pablo,orlando'
 import sys
-
+import copy
+clientes=['pablo','david','cristoforo','gertrudiz']
 def add_client(name):
-    if name not in clientes:
-        global clientes
-        _add_coma()
-        clientes+=name
+    global clientes
+    if name not in clientes:        
+        clientes.append(name)
     elif name in clientes:
         print('el usuario ya existe')
-    
-
-
-def _add_coma():
-    global clientes
-    clientes+=','
 
 
 def list_clients():
     global clientes
-    print(clientes)
+    for index,cliente in enumerate(clientes):
+        print('{}: {}'.format(index,cliente))
 
 #clase de estructuras condicionales
 
@@ -44,29 +38,30 @@ def delete_client(name):
         aux1=clientes[0:_index_name:1]
         aux2=clientes[_index_name+_size_name+2:-1:1]
         clientes=aux1+aux2"""
-        namesl=clientes.split(',')
-        aux=''
-        i=0
-        for cliente in namesl:
-            if i==0:
-                if cliente!=name:
-                    aux+=cliente
-                else:
-                    continue
+        #namesl=clientes.split(',')
+        aux=[]
+        #i=0
+        for cliente in clientes:
+            #if i==0:
+            if cliente!=name:
+                aux.append(cliente)
             else:
-                if cliente!=name:
-                    aux+=','+cliente
-                else:
-                    continue
-            i+=1                  
-        clientes=aux
+                continue
+            #else:
+                #if cliente!=name:
+                    #aux+=','+cliente
+                #else:
+                    #continue
+            #i+=1                  
+        clientes=copy.copy(aux)
         #clientes=clientes.replace(name+',','')
 
 
 def update_client(oldName,newName):
     global clientes
     if oldName in clientes:
-        clientes=clientes.replace(oldName,newName)
+        index=clientes.index(oldName)
+        clientes[index]=newName
     elif oldName not in clientes:
         print("The client is not exist")
 
@@ -74,7 +69,7 @@ def search_client(client_name):
     global clientes
     """client_list=clientes.split(',')
 
-    for client in client_list:
+    for cli in clientes:
         if client!=client_name:
             continue
         else:
