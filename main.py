@@ -1,10 +1,23 @@
 import sys
 import copy
-clientes=['pablo','david','cristoforo','gertrudiz']
-def add_client(name):
-    global clientes
-    if name not in clientes:        
-        clientes.append(name)
+clientes=[
+    {
+        'name':'pablo',#en los diccionarios tambien los elementos se separan con una coma
+        'company':'google',
+        'email':'pablo@google.com',
+        'position':'Software engineer',
+    },#porque son dos elementos de una lista
+    {
+        'name':'ricardo',
+        'company':'facebook',
+        'email':'ricardo@facebook.com',
+        'position':'Data engineer',
+    }  
+]
+def add_client(client):   
+    global clientes       #si funcionan porque los diccionarios son elementos de una lista
+    if client not in clientes:        
+        clientes.append(client)
     elif name in clientes:
         print('el usuario ya existe')
 
@@ -12,7 +25,13 @@ def add_client(name):
 def list_clients():
     global clientes
     for index,cliente in enumerate(clientes):
-        print('{}: {}'.format(index,cliente))
+        print('{uid} | {name} | {company} |{email} | {position}'.format(
+            uid=index,
+            name=cliente['name'],
+            company=cliente['company'],
+            email=cliente['email'],
+            position=cliente['position'],
+        ))
 
 #clase de estructuras condicionales
 
@@ -27,55 +46,40 @@ def _print_welcome():
     print('[L] for view client\'s list')
 
 
-def delete_client(name):
-    global clientes
+def existClient(name):
+    f=False
+    for index in range(len(clientes)):
+        if clientes[index]['name']==name:
+            f=True
+        else:
+            continue
+    return f
 
-    if name not in clientes:
-        print('This client is not exist')
-    elif name in clientes:
-        """_size_name=len(name)
-        _index_name=clientes.find(','+name)
-        aux1=clientes[0:_index_name:1]
-        aux2=clientes[_index_name+_size_name+2:-1:1]
-        clientes=aux1+aux2"""
-        #namesl=clientes.split(',')
-        aux=[]
-        #i=0
-        for cliente in clientes:
-            #if i==0:
-            if cliente!=name:
-                aux.append(cliente)
-            else:
-                continue
-            #else:
-                #if cliente!=name:
-                    #aux+=','+cliente
-                #else:
-                    #continue
-            #i+=1                  
-        clientes=copy.copy(aux)
-        #clientes=clientes.replace(name+',','')
+
+def delete_client(id):
+    global clientes
+    clientes.remove(clientes[id])
+    """borra todos los usuarios con ese nombre"""
 
 
 def update_client(oldName,newName):
     global clientes
-    if oldName in clientes:
-        index=clientes.index(oldName)
-        clientes[index]=newName
-    elif oldName not in clientes:
+    f=existClient(oldName)
+    if f:
+        for index in range(len(clientes)):
+            if clientes[index]['name']==oldName:
+                clientes[index]['name']=newName
+            else:
+                continue
+    else:
         print("The client is not exist")
+    """cambia el nombre de todos los usuarios que se llamen igual"""
 
-def search_client(client_name):
-    global clientes
-    """client_list=clientes.split(',')
-
-    for cli in clientes:
-        if client!=client_name:
-            continue
-        else:
-            return True"""
-    return client_name in clientes
-
+def getClientField(action):
+    field=None
+    while not field:
+        field=raw_input('what is the {} of client?     '.format(action))
+    return field
 
 def getNameClient(action):
     name=None
@@ -95,12 +99,17 @@ if __name__ == "__main__":
     action=raw_input()
     list_clients()
     if action =="C":
-        _name_client=getNameClient(action)
-        add_client(_name_client)
+        client={
+            'name':getClientField('name'),
+            'company':getClientField('company'),
+            'email':getClientField('email'),
+            'position':getClientField('position'),
+        }
+        add_client(client)
         list_clients()
     elif action =="D":
-        _name_client=getNameClient(action)
-        delete_client(_name_client)
+        id=int(getClientField('id'))
+        delete_client(id)
         list_clients()
     elif action=='U':
         print('What is the name of clien that you want to update?')
@@ -112,7 +121,7 @@ if __name__ == "__main__":
     elif action=='S':
         print('What is the name of clien that you want to search?')
         _name_client=getNameClient(action)
-        a=search_client(_name_client)
+        a=existClient(_name_client)
         if a==True:
             print('the user {} is in client\' list'.format(_name_client))
         else:
